@@ -12,6 +12,7 @@
 
 
 // Assumes screen is 512x512, fix this later
+// Change to proper perspective 3D later
 void drawCells(SDL_Surface* screen, PHYSICSBUFFER* cells){
 
   uint32_t* pix = screen->pixels;

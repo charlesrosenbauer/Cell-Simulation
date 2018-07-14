@@ -76,13 +76,29 @@ void cellCollide(CELLOBJ* a, CELLOBJ* b, CELLOBJ* qa, CELLOBJ* qb){
     * Improve cache patterning (9x bandwidth required right now?)
 */
 void moveCells(PHYSICSBUFFER* buff){
-  for(int i = 0; i < 64; i++){
-    for(int j = 0; j < 64; j++){
-      for(int k = 0; k < 64; k++){
 
-      }
-    }
+  // Simple for now
+  for(int i = 0; i < buff->size; i++){
+    buff->newcellsobjs[i] = buff->oldcellsobjs[i];
+    buff->newcellsobjs[i].dy += (buff->newcellsobjs[i].dy > 127)? 0 : 1;
+
+    int32_t x = buff->newcellsobjs[i].x;
+    int32_t y = buff->newcellsobjs[i].y;
+    int32_t z = buff->newcellsobjs[i].z;
+
+    x += buff->newcellsobjs[i].dx;
+    y += buff->newcellsobjs[i].dy;
+    z += buff->newcellsobjs[i].dz;
+
+    buff->newcellsobjs[i].x = (x > 32767)? 32767 : (x < -32768)? -32768 : x;
+    buff->newcellsobjs[i].y = (y > 32767)? 32767 : (y < -32768)? -32768 : y;
+    buff->newcellsobjs[i].z = (z > 32767)? 32767 : (z < -32768)? -32768 : z;
   }
+
+
+  CELLOBJ* tmp = buff->oldcellsobjs;
+  buff->oldcellsobjs = buff->newcellsobjs;
+  buff->newcellsobjs = tmp;
 }
 
 
@@ -109,7 +125,7 @@ PHYSICSBUFFER* randomBuffer(int size){
     ret->oldcellsobjs[i].z = (rstate >> 16);
 
     ret->oldcellsobjs[i].dx = 0;
-    ret->oldcellsobjs[i].dy = -1;
+    ret->oldcellsobjs[i].dy = 0;
     ret->oldcellsobjs[i].dz = 0;
 
     ret->newcellsobjs[i] = ret->oldcellsobjs[i];
