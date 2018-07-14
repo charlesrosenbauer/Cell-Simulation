@@ -66,6 +66,29 @@ void cellCollide(CELLOBJ* a, CELLOBJ* b, CELLOBJ* qa, CELLOBJ* qb){
 
 
 
+inline void moveCell(CELLOBJ* c){
+  int x = c->x + c->dx;
+  int y = c->y + c->dy;
+  int z = c->z + c->dz;
+
+  x = (x < -32767)? -32767 : (x > 32767)? 32767 : x;
+  y = (y < -32767)? -32767 : (y > 32767)? 32767 : y;
+  z = (z < -32767)? -32767 : (z > 32767)? 32767 : z;
+
+  c->x = x;
+  c->y = y;
+  c->z = z;
+}
+
+
+
+
+
+
+
+
+
+
 /*
   This function should eventually do the following:
     * Move cells
@@ -80,19 +103,9 @@ void moveCells(PHYSICSBUFFER* buff){
   // Simple for now
   for(int i = 0; i < buff->size; i++){
     buff->newcellsobjs[i] = buff->oldcellsobjs[i];
-    buff->newcellsobjs[i].dy += (buff->newcellsobjs[i].dy > 127)? 0 : 1;
+    buff->newcellsobjs[i].dy += (buff->newcellsobjs[i].dy > 126)? 0 : 1;
 
-    int32_t x = buff->newcellsobjs[i].x;
-    int32_t y = buff->newcellsobjs[i].y;
-    int32_t z = buff->newcellsobjs[i].z;
-
-    x += buff->newcellsobjs[i].dx;
-    y += buff->newcellsobjs[i].dy;
-    z += buff->newcellsobjs[i].dz;
-
-    buff->newcellsobjs[i].x = (x > 32767)? 32767 : (x < -32768)? -32768 : x;
-    buff->newcellsobjs[i].y = (y > 32767)? 32767 : (y < -32768)? -32768 : y;
-    buff->newcellsobjs[i].z = (z > 32767)? 32767 : (z < -32768)? -32768 : z;
+    moveCell(&buff->newcellsobjs[i]);
   }
 
 
