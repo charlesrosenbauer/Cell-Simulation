@@ -20,9 +20,24 @@
   mostly-sorted arrays.
 */
 void sortSpace(PHYSICSBUFFER* buff){
-  if(!buff->hasMoved) return;
+  //if(!buff->hasMoved) return;
 
+  for(int i = 0; i < buff->size; i++){
+    CELLOBJ *c = &buff->newcellsobjs[i];
+    c->sector = (c->x / 1024) | ((c->y / 1024) << 6) | ((c->z / 1024) << 12);
+  }
 
+  int n = buff->size;
+  for(int i = 0; i < buff->size; i++){
+    for(int j = 0; j < n; j++){
+      if(buff->newcellsobjs[j].sector > buff->newcellsobjs[j+1].sector){
+        CELLOBJ tmp = buff->newcellsobjs[j+1];
+        buff->newcellsobjs[j+1] = buff->newcellsobjs[j];
+        buff->newcellsobjs[j] = tmp;
+      }
+    }
+    n--;
+  }
 
 
 }
